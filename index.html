@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI-Powered Library Book Finder - Smart discovery tool using semantic search to find the perfect book.">
+  <title>BookMind – AI Library Assistant</title>
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header" id="header">
+  <a class="logo" href="#">
+    <div class="logo-icon"><i class="fa-solid fa-book-open-reader"></i></div>
+    <div class="logo-text">Book<span>Mind</span></div>
+  </a>
+  <div class="header-right">
+    <div class="header-stats">
+      <div class="stat"><div class="stat-num" id="totalBooks">100</div><div class="stat-label">Books</div></div>
+      <div class="stat"><div class="stat-num" id="availCount">0</div><div class="stat-label">Available</div></div>
+      <div class="stat"><div class="stat-num" id="subjectCount">0</div><div class="stat-label">Subjects</div></div>
+    </div>
+    <button class="scan-id-btn" id="scanIdBtn"><i class="fa-solid fa-qrcode"></i> Scan ID</button>
+  </div>
+</header>
+
+<!-- HERO / SEARCH -->
+<section class="hero" id="hero">
+  <h1>Find Your Next Book with <span class="ai">AI</span></h1>
+  <p>Search naturally — describe what you're looking for and let our assistant find the best match.</p>
+  <div class="search-wrap" id="searchWrap">
+    <input type="text" class="search-bar" id="searchInput" placeholder='Search books… (e.g., "beginner python", "AI basics")' autocomplete="off">
+    <button class="search-btn" id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+    <div class="suggestions" id="suggestions"></div>
+  </div>
+  <div class="chips" id="chips">
+    <span class="chip" data-query="beginner machine learning">Beginner ML</span>
+    <span class="chip" data-query="python basics">Python basics</span>
+    <span class="chip" data-query="easy AI books">Easy AI books</span>
+    <span class="chip" data-query="web development">Web Dev</span>
+    <span class="chip" data-query="data science">Data Science</span>
+    <span class="chip" data-query="algorithms easy">Algorithms</span>
+  </div>
+</section>
+
+<!-- LOADING -->
+<div class="loading" id="loading"><div class="spinner"></div><p>Analyzing your query with AI…</p></div>
+
+<!-- MAIN CONTENT -->
+<main class="main" id="mainContent">
+  <div class="content">
+    <div id="resultsHeader">
+      <h2 class="section-title"><i class="fa-solid fa-fire-flame-curved icon"></i> <span id="resultsTitle">Popular Books</span></h2>
+    </div>
+    <div class="book-grid" id="bookGrid"></div>
+    <div class="no-results" id="noResults" style="display:none">
+      <div class="icon"><i class="fa-regular fa-face-meh"></i></div>
+      <p>No books matched your query. Try different keywords!</p>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <!-- AI Assistant -->
+    <div class="assistant-section" id="assistantSection">
+      <h3 class="section-title"><i class="fa-solid fa-robot icon"></i> Find Me a Book</h3>
+      <p style="font-size:13px;color:var(--text-sec);margin-bottom:4px">Describe what you need in plain English</p>
+      <div class="assistant-input-wrap">
+        <input type="text" class="assistant-input" id="assistantInput" placeholder='e.g., "I want an easy ML book"'>
+        <button class="assistant-btn" id="assistantBtn"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+      </div>
+      <div class="assistant-results" id="assistantResults"></div>
+    </div>
+
+    <!-- Library Map -->
+    <div class="lib-map" id="libMap">
+      <h3 class="section-title"><i class="fa-solid fa-map-location-dot icon"></i> Library Map</h3>
+      <div class="map-grid" id="mapGrid"></div>
+    </div>
+
+    <!-- Popular -->
+    <div>
+      <h3 class="section-title"><i class="fa-solid fa-chart-line icon"></i> Trending Books</h3>
+      <div class="popular-list" id="popularList"></div>
+    </div>
+  </aside>
+</main>
+
+<!-- DETAIL OVERLAY -->
+<div class="detail-overlay" id="detailOverlay">
+  <div class="detail-panel" id="detailPanel">
+    <button class="detail-close" id="detailClose"><i class="fa-solid fa-xmark"></i></button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<!-- SCAN ID MODAL (QR/Barcode) -->
+<div class="detail-overlay" id="scanOverlay">
+  <div class="detail-panel scan-modal" id="scanModal">
+    <button class="detail-close" id="scanClose"><i class="fa-solid fa-xmark"></i></button>
+    <div class="scan-header">
+      <div class="scan-icon-big"><i class="fa-solid fa-qrcode"></i></div>
+      <h2>Scan Student ID</h2>
+      <p>Align the barcode or QR code on your ID within the frame.</p>
+    </div>
+    <!-- QR/Barcode Scanner Region -->
+    <div id="qrReader"></div>
+    <!-- Success Message -->
+    <div class="scan-success" id="scanSuccess"></div>
+    <!-- Scanning State -->
+    <div class="scan-loading" id="scanLoading">
+      <div class="spinner"></div>
+      <p>Verifying PRN...</p>
+    </div>
+    <!-- Error -->
+    <div class="scan-error" id="scanError"></div>
+    <!-- Manual PRN Input -->
+    <div class="scan-divider"><span>or enter PRN manually</span></div>
+    <div class="manual-prn-wrap">
+      <input type="text" class="manual-prn-input" id="manualPrnInput" placeholder="e.g. PRN1023">
+      <button class="manual-prn-btn" id="manualPrnBtn"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+    <!-- Demo User Selector -->
+    <div class="scan-divider"><span>or select a demo user</span></div>
+    <select class="scan-select" id="demoUserSelect">
+      <option value="">-- Choose a student --</option>
+    </select>
+  </div>
+</div>
+
+<!-- MY BOOKS PANEL -->
+<div class="detail-overlay" id="myBooksOverlay">
+  <div class="detail-panel mybooks-panel" id="myBooksPanel">
+    <button class="detail-close" id="myBooksClose"><i class="fa-solid fa-xmark"></i></button>
+    <div id="myBooksContent"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="users.js"></script>
+<script src="app.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="scan.js"></script>
+
+</body>
+</html>
