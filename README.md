@@ -1,1 +1,3 @@
-# Library-Assitant-AL
+git remote add origin https://github.com/YOUR_USERNAME/bookmind-ai-library-assistant.git
+git branch -M main
+git push -u origin main
